@@ -13,8 +13,14 @@ class ContractTestCase(TestCase):
 
     def test_get_education_code(self):
         c = get_contract_recipe().make()
-        self.assertEqual(c.get_education_code('Bachelors'), 'BA')
         self.assertIsNone(c.get_education_code('Nursing'), None)
+        self.assertEqual(c.get_education_code('Bachelors Degree'), 'BA')
+        self.assertEqual(c.get_education_code('High school diploma'), 'HS')
+        self.assertEqual(c.get_education_code('Associate'), 'AA')
+        self.assertEqual(c.get_education_code('Ph.D'), 'PHD')
+        self.assertEqual(c.get_education_code('Ph.D.'), 'PHD')
+        self.assertEqual(c.get_education_code('PhD'), 'PHD')
+        self.assertEqual(c.get_education_code('Master'), 'MA')
 
     def test_normalize_rate(self):
         c = get_contract_recipe().make()
