@@ -6,6 +6,7 @@ import os
 import logging
 from contracts.services.csv_contract_decoder import CSVContractDecoder
 
+
 class Command(BaseCommand):
     def handle(self, *args, **options):
         log = logging.getLogger(__name__)
@@ -15,6 +16,7 @@ class Command(BaseCommand):
         log.info("Deleting existing contract records")
         Contract.objects.all().delete()
 
+        log.info("Parsing CSV file")
         contracts = CSVContractDecoder(os.path.join(settings.BASE_DIR, 'contracts/docs/hourly_prices.csv')).decode()
 
         log.info("Inserting records")
