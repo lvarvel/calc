@@ -45,5 +45,5 @@ class MergeDataSetTests(TestCase):
         self.assertEqual(last_contract['Schedule'], 'IT Schedule 70')
         self.assertEqual(last_contract['SIN NUMBER'], '132-51')
         self.assertEqual(last_contract['Contract Year'], 1)
-        self.assertEqual(last_contract['Begin Date'], '6/24/15')
-        self.assertEqual(last_contract['End Date'], '6/23/20')
+        self.assertEqual(last_contract['Begin Date'], '06/24/2015')
+        self.assertEqual(last_contract['End Date'], '06/23/2020')

@@ -20,3 +20,4 @@ selenium_tests/screenshot.png
 /lib
 pip-selfcheck.json
 /src
+contracts/docs/

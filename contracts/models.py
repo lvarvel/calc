@@ -4,11 +4,11 @@ from djorm_pgfulltext.fields import VectorField
 
 
 EDUCATION_CHOICES = (
-    ('HS', 'high school'),
-    ('AA', 'associate'),
-    ('BA', 'bachelor'),
-    ('MA', 'master'),
-    ('PHD', 'phd'),
+    ('HS', 'High School'),
+    ('AA', 'Associates'),
+    ('BA', 'Bachelors'),
+    ('MA', 'Masters'),
+    ('PHD', 'Ph.D.'),
 )
 
 
@@ -97,7 +97,7 @@ class Contract(models.Model):
     def get_education_code(self, text):
 
         for pair in EDUCATION_CHOICES:
-            if pair[1] in text.strip().replace('.', '').lower():
+            if pair[1].lower()[0:5].replace('.', '') in text.strip().lower().replace('.', ''):
                 return pair[0]
 
         return None

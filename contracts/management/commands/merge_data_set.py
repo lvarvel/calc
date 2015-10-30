@@ -3,6 +3,7 @@ from django.conf import settings
 import os
 import pandas as pd
 import csv
+from django.utils.datetime_safe import datetime
 
 
 class Command(BaseCommand):
@@ -34,7 +35,13 @@ class Command(BaseCommand):
                     row['SCHEDULE'],
                     row['SIN(s) PROPOSED'],
                     row['CURRENT CONTRACT YEAR'],
-                    row['CONTRACT START DATE '],
-                    row['CONTRACT END DATE']
+                    self._format_date(row['CONTRACT START DATE ']),
+                    self._format_date(row['CONTRACT END DATE']),
                 ]
                 writer.writerow(row_values)
+
+    def _format_date(self, dt):
+        try:
+            return datetime.strptime(dt, '%m/%d/%y').strftime('%m/%d/%Y')
+        except ValueError:
+            return None

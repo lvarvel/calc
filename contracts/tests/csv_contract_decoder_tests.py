@@ -20,6 +20,10 @@ class CsvDecoderTests(TestCase):
             b'Analyst/Consultant I,66.51,,,,,Bachelors,1,O,,"Enterprise Information Services, Incorporated (d.b.a.) '
             b'Eis",GS-00F-182CA,Consolidated,"C874 1, C874 7",1,,\n'
         )
+        self.csv_file.write(
+            b'Analyst/Consultant I,66.51,,,,,Bachelors,6 months,O,,"Enterprise Information Services, Incorporated (d.b.a.) '
+            b'Eis",GS-00F-182CA,Consolidated,"C874 1, C874 7",1,,\n'
+        )
 
         self.csv_file.flush()
 
@@ -35,7 +39,7 @@ class CsvDecoderTests(TestCase):
     def test_decoder_returns_array_of_contracts(self):
         contracts = CSVContractDecoder(self.csv_file.name).decode()
 
-        self.assertEqual(len(contracts), 2)
+        self.assertEqual(len(contracts), 3)
         self.assertIsInstance(contracts[0], Contract)
 
     def test_decoder_creates_contract_object(self):
@@ -55,3 +59,8 @@ class CsvDecoderTests(TestCase):
         self.assertEqual(contracts[1].hourly_rate_year4, None)
         self.assertEqual(contracts[0].next_year_price, 39.77)
         self.assertEqual(contracts[0].second_year_price, 40.56)
+
+    def test_decoder_handles_bad_min_exp(self):
+        contracts = CSVContractDecoder(self.csv_file.name).decode()
+
+        self.assertEqual(contracts[2].min_years_experience, 0)

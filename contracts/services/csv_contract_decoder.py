@@ -1,6 +1,9 @@
 from contracts.models import Contract
 from django.utils.datetime_safe import datetime
 import pandas as pd
+import logging
+
+log = logging.getLogger(__name__)
 
 FEDERAL_MIN_CONTRACT_RATE = 10.10
 
@@ -9,6 +12,7 @@ class CSVContractDecoder():
         self.data_frame = pd.read_csv(file_name).fillna('')
 
     def decode(self):
+
         contracts = []
 
         for _, row in self.data_frame.iterrows():
@@ -33,7 +37,10 @@ class CSVContractDecoder():
             if row['End Date']:
                 contract.contract_end = datetime.strptime(row['End Date'], '%m/%d/%Y').date()
 
-            contract.min_years_experience = row['MinExpAct'] if row['MinExpAct'] else 0
+            try:
+                contract.min_years_experience = int(row['MinExpAct'])
+            except:
+                contract.min_years_experience = 0
 
             for count, rate in enumerate(row[2:6]):
                 if rate:
@@ -47,13 +54,13 @@ class CSVContractDecoder():
 
     def __generate_contract_rate_years(self, row, contract):
         price_fields = {
-            'current_price': getattr(contract, 'hourly_rate_year{}'.format(row['Contract Year']), 0)
+            'current_price': getattr(contract, 'hourly_rate_year{}'.format(int(row['Contract Year'])), 0)
         }
 
         if row['Contract Year'] < 5:
-            price_fields['next_year_price'] = getattr(contract, 'hourly_rate_year{}'.format(row['Contract Year'] + 1), 0)
+            price_fields['next_year_price'] = getattr(contract, 'hourly_rate_year{}'.format(int(row['Contract Year']) + 1), 0)
         if row['Contract Year'] < 4:
-            price_fields['second_year_price'] = getattr(contract, 'hourly_rate_year{}'.format(row['Contract Year'] + 2), 0)
+            price_fields['second_year_price'] = getattr(contract, 'hourly_rate_year{}'.format(int(row['Contract Year']) + 2), 0)
 
         for field, price in price_fields.items():
             if price and price >= FEDERAL_MIN_CONTRACT_RATE:
